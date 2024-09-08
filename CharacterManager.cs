@@ -14,6 +14,8 @@ public class CharacterManager
         _output = output;
     }
 
+    List<Character> Characters = new List<Character>();
+
     public void Run()
     {
         _output.WriteLine("Welcome to Character Management");
@@ -102,6 +104,15 @@ public class CharacterManager
 
             // Display character information
             Console.WriteLine($"Name: {name}; Class: {heroClass}; Level: {heroLevel}; HP: {hitPoints}; Equipment: {string.Join(", ", heroEquipmentArray)}");
+
+            Characters.Add(new Character()
+            {
+                CharacterName = name,
+                CharacterClass = heroClass,
+                CharacterLevel = Convert.ToInt16(heroLevel),
+                CharacterHitPoints = Convert.ToInt16(hitPoints),
+                CharacterEquipment = heroEquipmentArray
+            });
         }
     }
 
@@ -150,6 +161,15 @@ public class CharacterManager
         string lineToAppend = $"{newCharacter},{newClass},{1},{10},{pipeDelimitedChoicesString}"; // automatically level 1 and 10 hit points
         Console.WriteLine(lineToAppend);
         lines = lines.Append(lineToAppend).ToArray();
+
+        Characters.Add(new Character()
+            {
+                CharacterName = newCharacter,
+                CharacterClass = newClass,
+                CharacterLevel = 1,
+                CharacterHitPoints = 10,
+                CharacterEquipment = choicesArray
+            });
     }
 
     public void LevelUpCharacter()
@@ -221,4 +241,14 @@ public class CharacterManager
             }
         }
     }
+}
+
+public class Character
+{
+    public string CharacterName {get;set;}
+    public string CharacterClass {get;set;}
+    public int CharacterLevel {get;set;}
+    public int CharacterHitPoints {get;set;}
+    public string[] CharacterEquipment {get;set;}
+
 }
