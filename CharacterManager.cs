@@ -61,7 +61,6 @@ public class CharacterManager
             {
                 Console.WriteLine($"Name: {character.CharacterName}; Class: {character.CharacterClass}; Level: {character.CharacterLevel}; Hit Points: {character.CharacterHitPoints};  Equipment: {string.Join(", ", character.CharacterEquipment)}");
             }
-
     }
 
     public void AddCharacter()
@@ -122,72 +121,30 @@ public class CharacterManager
 
     public void LevelUpCharacter()
     {
-        Console.Write("Enter the name of the character to level up: ");
-        string nameToLevelUp = Console.ReadLine();
+        Console.WriteLine("Select the character to level up: ");
 
-        // Loop through characters to find the one to level up
-        for (int i = 1; i < lines.Length; i++)
+        List<string> characterNamesList = new List<string>();
+
+        foreach (var character in Characters)
+
         {
-            string line = lines[i];
-
-            // TODO: Check if the name matches the one to level up
-            // Do not worry about case sensitivity at this point
-            if (line.Contains(nameToLevelUp))
-            {
-
-                // TODO: Split the rest of the fields locating the level field
-                string[] fields = line.Split(",");
-
-                string heroClass = fields[^4];
-                int level = Convert.ToInt16(fields[^3]);
-                int hitPoints = Convert.ToInt16(fields[^2]);
-                string equipment = fields[^1];
-
-                string name;
-                int commaIndex;
-
-                if (line.StartsWith("\""))
-                {
-                    // TODO: Find the closing quote and the comma right after it
-                    
-                    commaIndex = line.IndexOf(',');
-                    name = line.Substring(0, commaIndex);
-                    int pos = name.Length + 1;
-
-                    var line2 = line.Substring(pos);
-
-                    int commaIndex2 = line2.IndexOf(',');
-
-                    int nameEndsIndex = pos + commaIndex2;
-
-                    // TODO: Remove quotes from the name if present and parse the name
-                    // name = ...
-                    name = line.Substring(0,nameEndsIndex);
-                    line = line.Substring(nameEndsIndex);
-                    name = name.Replace("\"","");
-                }
-                else
-                {
-                    // TODO: Name is not quoted, so store the name up to the first comma
-                    commaIndex = line.IndexOf(',');
-                    name = line.Substring(0,commaIndex);
-                    line = line.Substring(commaIndex);
-                }
-
-                // TODO: Level up the character
-                level++;
-                Console.WriteLine($"Character {name} leveled up to level {level}!");
-
-                // TODO: Update the line with the new level
-                if (name.Contains(","))
-                {
-                    name = $"\"{name}\"";
-                }
-                lines[i] = $"{name},{heroClass},{level},{hitPoints},{equipment}";
-
-                break;
-            }
+            characterNamesList.Add(character.CharacterName);
         }
+
+        for (int i = 0; i < characterNamesList.Count; i++)
+        {
+            System.Console.WriteLine($"{i+1}: {characterNamesList[i]}");
+        }
+        Console.Write("Enter Your Choice: ");
+        int indexOfNameToLevelUp = Convert.ToInt16(Console.ReadLine()) - 1;
+
+        string nameToLevelUp = characterNamesList[indexOfNameToLevelUp];
+        
+        System.Console.WriteLine($"You've Chosen to Level Up {nameToLevelUp}");
+
+        var foundCharacter = Characters.Where(c => c.CharacterName == nameToLevelUp).FirstOrDefault();
+
+        foundCharacter.CharacterLevel++;
     }
 }
 
