@@ -21,6 +21,9 @@ public class CharacterManager
         _output.WriteLine("Welcome to Character Management");
 
         lines = File.ReadAllLines(_filePath);
+        CharacterReader characterReader = new CharacterReader();
+        characterReader.CharacterLines = lines;
+        characterReader.LoadCharacters(Characters);
 
         while (true)
         {
@@ -54,66 +57,11 @@ public class CharacterManager
 
     public void DisplayCharacters()
     {
-        // Skip the header row
-        for (int i = 1; i < lines.Length; i++)
-        {
-            string line = lines[i];
-
-            string name;
-            int commaIndex;
-
-            // Check if the name is quoted
-            if (line.StartsWith("\""))
+        foreach (var character in Characters)
             {
-                // TODO: Find the closing quote and the comma right after it
-                
-                commaIndex = line.IndexOf(',');
-                name = line.Substring(0, commaIndex);
-                int pos = name.Length + 1;
-
-                var line2 = line.Substring(pos);
-
-                int commaIndex2 = line2.IndexOf(',');
-
-                int nameEndsIndex = pos + commaIndex2;
-
-                // TODO: Remove quotes from the name if present and parse the name
-                name = line.Substring(0,nameEndsIndex);
-                line = line.Substring(nameEndsIndex);
-                name = name.Replace("\"","");
-            }
-            else
-            {
-                // TODO: Name is not quoted, so store the name up to the first comma
-                commaIndex = line.IndexOf(',');
-                name = line.Substring(0,commaIndex);
-                line = line.Substring(commaIndex);
+                Console.WriteLine($"Name: {character.CharacterName}; Class: {character.CharacterClass}; Level: {character.CharacterLevel}; Hit Points: {character.CharacterHitPoints};  Equipment: {string.Join(", ", character.CharacterEquipment)}");
             }
 
-            // TODO: Parse characterClass, level, hitPoints, and equipment
-
-            string[] otherFields = line.Split(','); 
-               
-            var heroClass = otherFields[1];
-            var heroLevel = otherFields[2];
-            var hitPoints = otherFields[3];
-            
-            // TODO: Parse equipment noting that it contains multiple items separated by '|'
-            var heroEquipmentString = otherFields[4];                
-            string[] heroEquipmentArray = heroEquipmentString.Split('|');
-
-            // Display character information
-            Console.WriteLine($"Name: {name}; Class: {heroClass}; Level: {heroLevel}; HP: {hitPoints}; Equipment: {string.Join(", ", heroEquipmentArray)}");
-
-            Characters.Add(new Character()
-            {
-                CharacterName = name,
-                CharacterClass = heroClass,
-                CharacterLevel = Convert.ToInt16(heroLevel),
-                CharacterHitPoints = Convert.ToInt16(hitPoints),
-                CharacterEquipment = heroEquipmentArray
-            });
-        }
     }
 
     public void AddCharacter()
@@ -251,4 +199,82 @@ public class Character
     public int CharacterHitPoints {get;set;}
     public string[] CharacterEquipment {get;set;}
 
+}
+
+public class CharacterReader
+{
+    public string[] CharacterLines {get;set;}
+
+    public string GetName(string line)
+    {
+        string name;
+        int commaIndex;
+
+        // Check if the name is quoted
+        if (line.StartsWith("\""))
+        {
+            // TODO: Find the closing quote and the comma right after it
+            
+            commaIndex = line.IndexOf(',');
+            name = line.Substring(0, commaIndex);
+            int pos = name.Length + 1;
+
+            var line2 = line.Substring(pos);
+
+            int commaIndex2 = line2.IndexOf(',');
+
+            int nameEndsIndex = pos + commaIndex2;
+
+            // TODO: Remove quotes from the name if present and parse the name
+            name = line.Substring(0,nameEndsIndex);
+            line = line.Substring(nameEndsIndex);
+            name = name.Replace("\"","");
+        }
+        else
+        {
+            // TODO: Name is not quoted, so store the name up to the first comma
+            commaIndex = line.IndexOf(',');
+            name = line.Substring(0,commaIndex);
+            line = line.Substring(commaIndex);
+        }
+        return name;
+    }
+    
+        public (string, int, int, string[]) GetCharacterTraits(string line)
+    {   
+        string[] fields = line.Split(",");
+
+        string heroClass = fields[^4];
+        int level = Convert.ToInt16(fields[^3]);
+        int hitPoints = Convert.ToInt16(fields[^2]);
+        string heroEquipmentString = fields[^1];
+        
+        // TODO: Parse equipment noting that it contains multiple items separated by '|'
+        string[] heroEquipmentArray = heroEquipmentString.Split('|');
+
+        return (heroClass, level, hitPoints, heroEquipmentArray);
+
+    }
+
+    public void LoadCharacters(List<Character> Characters)
+    {
+        for (int i = 1; i < CharacterLines.Length; i++)
+        {
+            string line = CharacterLines[i];
+
+            string characterName = GetName(line);
+
+            var (characterClass, characterLevel, characterHitPoints, characterEquipment) = GetCharacterTraits(line);
+
+            Characters.Add(new Character()
+            {
+                CharacterName = characterName,
+                CharacterClass = characterClass,
+                CharacterLevel = characterLevel,
+                CharacterHitPoints = characterHitPoints,
+                CharacterEquipment = characterEquipment
+            });
+        }
+
+    }
 }
