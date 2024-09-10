@@ -15,6 +15,7 @@ public class CharacterManager
     }
 
     List<Character> Characters = new List<Character>();
+    EquimpmentManager equipmentManager = new EquimpmentManager();
 
     public void Run()
     {
@@ -78,15 +79,14 @@ public class CharacterManager
         string newClass = Console.ReadLine();
         _output.WriteLine("Select 3 tools from the menu below: ");
 
-        string[] equipmentOptions = {"Armor","Book","Cloak","Dagger","Horse","Lockpick","Mace","Potion","Robe","Shield","Staff","Sword"};
+        string[] equipmentOptions = equipmentManager.EquimpmentOptions;
         int countEquipChoicesLeft = 3;
         List<string> choicesList = new List<string>();
 
         while (countEquipChoicesLeft > 0)
         {
+            equipmentManager.DisplayEquipmentMenu();
             
-            Console.Write("1. Armor\n2. Book\n3. Cloak\n4. Dagger\n5. Horse\n6. Lockpick\n7. Mace\n8. Potion\n9. Robe\n10. Shield\n11. Staff\n12. Sword\n");
-
             int choice = Convert.ToInt16(Console.ReadLine());
             int mappedToIndexChoice = choice - 1;
             string choiceName = equipmentOptions[mappedToIndexChoice];
@@ -148,6 +148,20 @@ public class Character
     public int CharacterHitPoints {get;set;}
     public string[] CharacterEquipment {get;set;}
 
+}
+
+public class EquimpmentManager
+{
+    public string[] EquimpmentOptions {get;set;} = {"Armor","Book","Cloak","Dagger","Horse","Lockpick","Mace","Potion","Robe","Shield","Staff","Sword"};
+
+    
+    public void DisplayEquipmentMenu()
+    {
+        for (int i = 0; i < EquimpmentOptions.Length; i++)
+            {
+                Console.WriteLine($"{i+1}: {EquimpmentOptions[i]}");
+            }
+    }
 }
 
 public class CharacterReader
