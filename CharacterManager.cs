@@ -47,6 +47,9 @@ public class CharacterManager
                     LevelUpCharacter();
                     break;
                 case "4":
+                    CharacterWriter characterWriter = new CharacterWriter();
+                    characterWriter.CharacterWriterList = Characters;
+                    characterWriter.WriteOutCharacters();
                     return;
                 default:
                     _output.WriteLine("Invalid choice. Please try again.");
@@ -59,7 +62,7 @@ public class CharacterManager
     {
         foreach (var character in Characters)
             {
-                Console.WriteLine($"Name: {character.CharacterName}; Class: {character.CharacterClass}; Level: {character.CharacterLevel}; Hit Points: {character.CharacterHitPoints};  Equipment: {string.Join(", ", character.CharacterEquipment)}");
+                _output.WriteLine($"Name: {character.CharacterName}; Class: {character.CharacterClass}; Level: {character.CharacterLevel}; Hit Points: {character.CharacterHitPoints};  Equipment: {string.Join(", ", character.CharacterEquipment)}");
             }
     }
 
@@ -73,7 +76,7 @@ public class CharacterManager
         string newCharacter = Console.ReadLine();
         Console.Write($"Enter your character's class: ");
         string newClass = Console.ReadLine();
-        Console.WriteLine("Select 3 tools from the menu below: ");
+        _output.WriteLine("Select 3 tools from the menu below: ");
 
         string[] equipmentOptions = {"Armor","Book","Cloak","Dagger","Horse","Lockpick","Mace","Potion","Robe","Shield","Staff","Sword"};
         int countEquipChoicesLeft = 3;
@@ -96,7 +99,7 @@ public class CharacterManager
         string[] choicesArray = choicesList.ToArray();
         string choicesString = string.Join(", ", choicesArray);
 
-        Console.WriteLine($"You've chosen the following equipment: {choicesString}");
+        _output.WriteLine($"You've chosen the following equipment: {choicesString}");
 
         // Append the new character to the lines array
         if (newCharacter.Contains(","))
@@ -106,7 +109,7 @@ public class CharacterManager
 
         string pipeDelimitedChoicesString = string.Join("|", choicesArray);
         string lineToAppend = $"{newCharacter},{newClass},{1},{10},{pipeDelimitedChoicesString}"; // automatically level 1 and 10 hit points
-        Console.WriteLine(lineToAppend);
+        _output.WriteLine(lineToAppend);
         lines = lines.Append(lineToAppend).ToArray();
 
         Characters.Add(new Character()
@@ -121,7 +124,7 @@ public class CharacterManager
 
     public void LevelUpCharacter()
     {
-        Console.WriteLine("Select the character to level up: ");
+        _output.WriteLine("Select the character to level up: ");
 
         List<string> characterNamesList = new List<string>();
 
@@ -133,14 +136,14 @@ public class CharacterManager
 
         for (int i = 0; i < characterNamesList.Count; i++)
         {
-            System.Console.WriteLine($"{i+1}: {characterNamesList[i]}");
+            _output.WriteLine($"{i+1}: {characterNamesList[i]}");
         }
         Console.Write("Enter Your Choice: ");
         int indexOfNameToLevelUp = Convert.ToInt16(Console.ReadLine()) - 1;
 
         string nameToLevelUp = characterNamesList[indexOfNameToLevelUp];
         
-        System.Console.WriteLine($"You've Chosen to Level Up {nameToLevelUp}");
+        _output.WriteLine($"You've Chosen to Level Up {nameToLevelUp}");
 
         var foundCharacter = Characters.Where(c => c.CharacterName == nameToLevelUp).FirstOrDefault();
 
@@ -184,7 +187,6 @@ public class CharacterReader
 
             // TODO: Remove quotes from the name if present and parse the name
             name = line.Substring(0,nameEndsIndex);
-            line = line.Substring(nameEndsIndex);
             name = name.Replace("\"","");
         }
         else
@@ -192,7 +194,6 @@ public class CharacterReader
             // TODO: Name is not quoted, so store the name up to the first comma
             commaIndex = line.IndexOf(',');
             name = line.Substring(0,commaIndex);
-            line = line.Substring(commaIndex);
         }
         return name;
     }
@@ -233,5 +234,39 @@ public class CharacterReader
             });
         }
 
+    }
+}
+
+public class CharacterWriter
+{
+    public List<Character> CharacterWriterList {get;set;}
+    private List<string> outputList = new List<string>();
+
+    public void WriteOutCharacters()
+    {
+        foreach(var character in CharacterWriterList)
+        {
+            string nameString;
+
+            if (character.CharacterName.Contains(","))
+            {
+                nameString = $"\"{character.CharacterName}\"";
+            }
+            else
+            {
+                nameString = character.CharacterName;
+            }
+
+            string pipeDelimitedChoicesString = string.Join("|", character.CharacterEquipment);
+
+            string lineToAdd = $"{nameString},{character.CharacterClass},{character.CharacterLevel},{character.CharacterHitPoints},{pipeDelimitedChoicesString}";
+            
+            outputList.Add(lineToAdd);
+        }
+        using (StreamWriter outputFile = new StreamWriter("WriteLines.txt"))
+            {
+                foreach (string line in outputList)
+                    outputFile.WriteLine(line);
+            }
     }
 }
