@@ -8,23 +8,27 @@ public class CharacterManager
 
     private string[] lines;
 
+    private CharacterReader characterReader;
+    private List<Character> Characters;
+    private EquipmentManager equipmentManager;
+
     public CharacterManager(IInput input, IOutput output)
     {
         _input = input;
         _output = output;
-    }
 
-    List<Character> Characters = new List<Character>();
-    EquimpmentManager equipmentManager = new EquimpmentManager();
+        characterReader = new CharacterReader();
+        Characters = characterReader.CharactersList ?? new List<Character>(); // Initialize Characters list
+        equipmentManager = new EquipmentManager();
+    }
 
     public void Run()
     {
         _output.WriteLine("Welcome to Character Management");
 
         lines = File.ReadAllLines(_filePath);
-        CharacterReader characterReader = new CharacterReader();
         characterReader.CharacterLines = lines;
-        characterReader.LoadCharacters(Characters);
+        characterReader.LoadCharacters();
 
         while (true)
         {
@@ -79,7 +83,7 @@ public class CharacterManager
         string newClass = Console.ReadLine();
         _output.WriteLine("Select 3 tools from the menu below: ");
 
-        string[] equipmentOptions = equipmentManager.EquimpmentOptions;
+        string[] equipmentOptions = equipmentManager.EquipmentOptions;
         int countEquipChoicesLeft = 3;
         List<string> choicesList = new List<string>();
 
@@ -150,16 +154,16 @@ public class Character
 
 }
 
-public class EquimpmentManager
+public class EquipmentManager
 {
-    public string[] EquimpmentOptions {get;set;} = {"Armor","Book","Cloak","Dagger","Horse","Lockpick","Mace","Potion","Robe","Shield","Staff","Sword"};
+    public string[] EquipmentOptions {get;set;} = {"Armor","Book","Cloak","Dagger","Horse","Lockpick","Mace","Potion","Robe","Shield","Staff","Sword"};
 
     
     public void DisplayEquipmentMenu()
     {
-        for (int i = 0; i < EquimpmentOptions.Length; i++)
+        for (int i = 0; i < EquipmentOptions.Length; i++)
             {
-                Console.WriteLine($"{i+1}: {EquimpmentOptions[i]}");
+                Console.WriteLine($"{i+1}: {EquipmentOptions[i]}");
             }
     }
 }
@@ -167,6 +171,7 @@ public class EquimpmentManager
 public class CharacterReader
 {
     public string[] CharacterLines {get;set;}
+    public List<Character> CharactersList {get;set;} = new List<Character>();
 
     public string GetName(string line)
     {
@@ -217,7 +222,7 @@ public class CharacterReader
 
     }
 
-    public void LoadCharacters(List<Character> Characters)
+    public void LoadCharacters()
     {
         for (int i = 1; i < CharacterLines.Length; i++)
         {
@@ -227,7 +232,7 @@ public class CharacterReader
 
             var (characterClass, characterLevel, characterHitPoints, characterEquipment) = GetCharacterTraits(line);
 
-            Characters.Add(new Character()
+            CharactersList.Add(new Character()
             {
                 CharacterName = characterName,
                 CharacterClass = characterClass,
