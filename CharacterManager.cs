@@ -126,21 +126,15 @@ public class CharacterManager
     {
         _output.WriteLine("Select the character to level up: ");
 
-        List<string> characterNamesList = new List<string>();
+        CharacterNamesMenu characterNamesMenu = new CharacterNamesMenu();
+        characterNamesMenu.GetMenutOfCharacters(Characters);
 
-        foreach (var character in Characters)
-
-        {
-            characterNamesList.Add(character.CharacterName);
-        }
-
-        for (int i = 0; i < characterNamesList.Count; i++)
-        {
-            _output.WriteLine($"{i+1}: {characterNamesList[i]}");
-        }
+        List<string> characterNamesList = characterNamesMenu.CharacterNamesList;
+        
         Console.Write("Enter Your Choice: ");
         int indexOfNameToLevelUp = Convert.ToInt16(Console.ReadLine()) - 1;
-
+        
+        
         string nameToLevelUp = characterNamesList[indexOfNameToLevelUp];
         
         _output.WriteLine($"You've Chosen to Level Up {nameToLevelUp}");
@@ -237,10 +231,31 @@ public class CharacterReader
     }
 }
 
+public class CharacterNamesMenu
+{
+    public List<string> CharacterNamesList {get;set;}
+
+    public void GetMenutOfCharacters(List<Character> Characters)
+    {
+        CharacterNamesList = new List<string>();
+
+        foreach (var character in Characters)
+
+        {
+            CharacterNamesList.Add(character.CharacterName);
+        }
+
+        for (int i = 0; i < CharacterNamesList.Count; i++)
+        {
+            Console.WriteLine($"{i+1}: {CharacterNamesList[i]}");
+        }
+    }
+}
+
 public class CharacterWriter
 {
     public List<Character> CharacterWriterList {get;set;}
-    private List<string> outputList = new List<string>();
+    private List<string> OutputList = new List<string>();
 
     public void WriteOutCharacters()
     {
@@ -261,11 +276,11 @@ public class CharacterWriter
 
             string lineToAdd = $"{nameString},{character.CharacterClass},{character.CharacterLevel},{character.CharacterHitPoints},{pipeDelimitedChoicesString}";
             
-            outputList.Add(lineToAdd);
+            OutputList.Add(lineToAdd);
         }
         using (StreamWriter outputFile = new StreamWriter("WriteLines.txt"))
             {
-                foreach (string line in outputList)
+                foreach (string line in OutputList)
                     outputFile.WriteLine(line);
             }
     }
