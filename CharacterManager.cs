@@ -126,10 +126,8 @@ public class CharacterManager
     {
         _output.WriteLine("Select the character to level up: ");
 
-        CharacterNamesMenu characterNamesMenu = new CharacterNamesMenu();
-        characterNamesMenu.GetMenutOfCharacters(Characters);
-
-        List<string> characterNamesList = characterNamesMenu.CharacterNamesList;
+        characterReader.GetMenutOfCharacters();
+        List<string> characterNamesList = characterReader.CharacterNamesList;
         
         Console.Write("Enter Your Choice: ");
         int indexOfNameToLevelUp = Convert.ToInt16(Console.ReadLine()) - 1;
@@ -138,9 +136,17 @@ public class CharacterManager
         
         _output.WriteLine($"You've Chosen to Level Up {nameToLevelUp}");
 
-        var foundCharacter = Characters.Where(c => c.CharacterName == nameToLevelUp).FirstOrDefault();
+        var foundCharacter = characterReader.FindCharacter(nameToLevelUp);
 
-        foundCharacter.CharacterLevel++;
+        if (foundCharacter != null)
+        {
+            foundCharacter.CharacterLevel++;
+        }
+        else
+        {
+            _output.WriteLine("Character not found.");
+        }
+        
     }
 }
 
@@ -172,6 +178,7 @@ public class CharacterReader
 {
     public string[] CharacterLines {get;set;}
     public List<Character> CharactersList {get;set;} = new List<Character>();
+    public List<string> CharacterNamesList {get;set;}
 
     public string GetName(string line)
     {
@@ -243,6 +250,28 @@ public class CharacterReader
         }
 
     }
+
+    public void GetMenutOfCharacters()
+    {
+        CharacterNamesList = new List<string>();
+
+        foreach (var character in CharactersList)
+
+        {
+            CharacterNamesList.Add(character.CharacterName);
+        }
+
+        for (int i = 0; i < CharacterNamesList.Count; i++)
+        {
+            Console.WriteLine($"{i+1}: {CharacterNamesList[i]}");
+        }
+    }
+
+    public Character FindCharacter(string characterSearch)
+    {
+        var foundCharacter = CharactersList.Where(c => c.CharacterName == characterSearch).FirstOrDefault();
+        return foundCharacter;
+    }
 }
 
 public class CharacterWriter
@@ -276,26 +305,5 @@ public class CharacterWriter
                 foreach (string line in OutputList)
                     outputFile.WriteLine(line);
             }
-    }
-}
-
-public class CharacterNamesMenu
-{
-    public List<string> CharacterNamesList {get;set;}
-
-    public void GetMenutOfCharacters(List<Character> Characters)
-    {
-        CharacterNamesList = new List<string>();
-
-        foreach (var character in Characters)
-
-        {
-            CharacterNamesList.Add(character.CharacterName);
-        }
-
-        for (int i = 0; i < CharacterNamesList.Count; i++)
-        {
-            Console.WriteLine($"{i+1}: {CharacterNamesList[i]}");
-        }
     }
 }
