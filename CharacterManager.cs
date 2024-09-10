@@ -102,10 +102,6 @@ public class CharacterManager
         _output.WriteLine($"You've chosen the following equipment: {choicesString}");
 
         // Append the new character to the lines array
-        if (newCharacter.Contains(","))
-        {
-            newCharacter = $"\"{newCharacter}\"";
-        }
 
         string pipeDelimitedChoicesString = string.Join("|", choicesArray);
         string lineToAppend = $"{newCharacter},{newClass},{1},{10},{pipeDelimitedChoicesString}"; // automatically level 1 and 10 hit points
@@ -133,7 +129,6 @@ public class CharacterManager
         
         Console.Write("Enter Your Choice: ");
         int indexOfNameToLevelUp = Convert.ToInt16(Console.ReadLine()) - 1;
-        
         
         string nameToLevelUp = characterNamesList[indexOfNameToLevelUp];
         
@@ -231,27 +226,6 @@ public class CharacterReader
     }
 }
 
-public class CharacterNamesMenu
-{
-    public List<string> CharacterNamesList {get;set;}
-
-    public void GetMenutOfCharacters(List<Character> Characters)
-    {
-        CharacterNamesList = new List<string>();
-
-        foreach (var character in Characters)
-
-        {
-            CharacterNamesList.Add(character.CharacterName);
-        }
-
-        for (int i = 0; i < CharacterNamesList.Count; i++)
-        {
-            Console.WriteLine($"{i+1}: {CharacterNamesList[i]}");
-        }
-    }
-}
-
 public class CharacterWriter
 {
     public List<Character> CharacterWriterList {get;set;}
@@ -283,5 +257,26 @@ public class CharacterWriter
                 foreach (string line in OutputList)
                     outputFile.WriteLine(line);
             }
+    }
+}
+
+public class CharacterNamesMenu
+{
+    public List<string> CharacterNamesList {get;set;}
+
+    public void GetMenutOfCharacters(List<Character> Characters)
+    {
+        CharacterNamesList = new List<string>();
+
+        foreach (var character in Characters)
+
+        {
+            CharacterNamesList.Add(character.CharacterName);
+        }
+
+        for (int i = 0; i < CharacterNamesList.Count; i++)
+        {
+            Console.WriteLine($"{i+1}: {CharacterNamesList[i]}");
+        }
     }
 }
