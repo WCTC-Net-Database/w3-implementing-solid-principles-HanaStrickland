@@ -65,10 +65,7 @@ public class CharacterManager
 
     public void DisplayCharacters()
     {
-        foreach (var character in Characters)
-            {
-                _output.WriteLine($"Name: {character.CharacterName}; Class: {character.CharacterClass}; Level: {character.CharacterLevel}; Hit Points: {character.CharacterHitPoints};  Equipment: {string.Join(", ", character.CharacterEquipment)}");
-            }
+        characterReader.DisplayCharacters();
     }
 
     public void AddCharacter()
@@ -112,14 +109,7 @@ public class CharacterManager
         _output.WriteLine(lineToAppend);
         lines = lines.Append(lineToAppend).ToArray();
 
-        Characters.Add(new Character()
-            {
-                CharacterName = newCharacter,
-                CharacterClass = newClass,
-                CharacterLevel = 1,
-                CharacterHitPoints = 10,
-                CharacterEquipment = choicesArray
-            });
+        characterReader.AddCharacter(newCharacter, newClass, choicesArray);
     }
 
     public void LevelUpCharacter()
@@ -271,6 +261,27 @@ public class CharacterReader
     {
         var foundCharacter = CharactersList.Where(c => c.CharacterName == characterSearch).FirstOrDefault();
         return foundCharacter;
+    }
+
+    public void DisplayCharacters()
+    {
+        foreach (var character in CharactersList)
+            {
+                Console.WriteLine($"Name: {character.CharacterName}; Class: {character.CharacterClass}; Level: {character.CharacterLevel}; Hit Points: {character.CharacterHitPoints};  Equipment: {string.Join(", ", character.CharacterEquipment)}");
+            }
+    }
+
+    public void AddCharacter(string newCharacter, string newClass, string[] choicesArray)
+    {
+        CharactersList.Add(new Character()
+            {
+                CharacterName = newCharacter,
+                CharacterClass = newClass,
+                CharacterLevel = 1,
+                CharacterHitPoints = 10,
+                CharacterEquipment = choicesArray
+            });
+
     }
 }
 
