@@ -19,7 +19,7 @@ public class CharacterManager
         _output = output;
 
         characterReader = new CharacterReader();
-        Characters = characterReader.CharactersList ?? new List<Character>(); // Initialize Characters list
+        Characters = characterReader.CharactersList ?? new List<Character>();
         equipmentManager = new EquipmentManager();
         characterClassManager = new CharcaterClassManager();
     }
@@ -126,7 +126,7 @@ public class CharacterManager
     {
         _output.WriteLine("Select the character to level up: ");
 
-        characterReader.GetMenutOfCharacters();
+        characterReader.DisplayCharacterNamesMenu();
         List<string> characterNamesList = characterReader.CharacterNamesList;
         
         Console.Write("Enter Your Choice: ");
@@ -191,7 +191,7 @@ public class CharacterReader
 {
     public string[] CharacterLines {get;set;}
     public List<Character> CharactersList {get;set;} = new List<Character>();
-    public List<string> CharacterNamesList {get;set;}
+    public List<string> CharacterNamesList {get;set;} // For menu of characters
 
     public string GetName(string line)
     {
@@ -264,7 +264,7 @@ public class CharacterReader
 
     }
 
-    public void GetMenutOfCharacters()
+    public void DisplayCharacterNamesMenu()
     {
         CharacterNamesList = new List<string>();
 
