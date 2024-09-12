@@ -11,6 +11,7 @@ public class CharacterManager
     private CharacterReader characterReader;
     private List<Character> Characters;
     private EquipmentManager equipmentManager;
+    private CharcaterClassManager characterClassManager;
 
     public CharacterManager(IInput input, IOutput output)
     {
@@ -20,6 +21,7 @@ public class CharacterManager
         characterReader = new CharacterReader();
         Characters = characterReader.CharactersList ?? new List<Character>(); // Initialize Characters list
         equipmentManager = new EquipmentManager();
+        characterClassManager = new CharcaterClassManager();
     }
 
     public void Run()
@@ -76,8 +78,16 @@ public class CharacterManager
         // DO NOT just ask the user to enter a new line of CSV data or enter the pipe-separated equipment string
         Console.Write("Enter the name for your new character: ");
         string newCharacter = Console.ReadLine();
-        Console.Write($"Enter your character's class: ");
-        string newClass = Console.ReadLine();
+
+        Console.WriteLine($"Pick you character's class from the menu below: ");
+        characterClassManager.DisplayCharacterClassMenu();
+        Console.Write("Enter Your Choice: ");
+        int newClassIndex = Convert.ToInt16(Console.ReadLine()) - 1;
+
+        string[] characterClassOptions = characterClassManager.CharacterClassOptions;
+
+        string newClass = characterClassOptions[newClassIndex];
+        
         _output.WriteLine("Select 3 tools from the menu below: ");
 
         string[] equipmentOptions = equipmentManager.EquipmentOptions;
@@ -161,6 +171,19 @@ public class EquipmentManager
             {
                 Console.WriteLine($"{i+1}: {EquipmentOptions[i]}");
             }
+    }
+}
+
+public class CharcaterClassManager
+{
+    public string[] CharacterClassOptions {get;set;} = {"Cleric", "Fighter", "Rogue", "Wizard"};
+
+    public void DisplayCharacterClassMenu()
+    {
+        for (int i = 0; i < CharacterClassOptions.Length; i++)
+        {
+            Console.WriteLine($"{i+1}: {CharacterClassOptions[i]}");
+        }
     }
 }
 
