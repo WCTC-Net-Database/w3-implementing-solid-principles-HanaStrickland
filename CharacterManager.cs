@@ -38,7 +38,8 @@ public class CharacterManager
             _output.WriteLine("1. Display Characters");
             _output.WriteLine("2. Add Character");
             _output.WriteLine("3. Level Up Character");
-            _output.WriteLine("4. Exit");
+            _output.WriteLine("4. Find Character");
+            _output.WriteLine("5. Exit");
             _output.Write("Enter your choice: ");
             var choice = _input.ReadLine();
 
@@ -54,6 +55,9 @@ public class CharacterManager
                     LevelUpCharacter();
                     break;
                 case "4":
+                    FindACharacter();
+                    break;
+                case "5":
                     CharacterWriter characterWriter = new CharacterWriter();
                     characterWriter.CharacterWriterList = Characters;
                     characterWriter.WriteOutCharacters();
@@ -127,19 +131,15 @@ public class CharacterManager
         _output.WriteLine("Select the character to level up: ");
 
         characterReader.DisplayCharacterNamesMenu();
-        List<string> characterNamesList = characterReader.CharacterNamesList;
         
         Console.Write("Enter Your Choice: ");
-        int indexOfNameToLevelUp = Convert.ToInt16(Console.ReadLine()) - 1;
-        
-        string nameToLevelUp = characterNamesList[indexOfNameToLevelUp];
-        
-        _output.WriteLine($"You've Chosen to Level Up {nameToLevelUp}");
-
-        var foundCharacter = characterReader.FindCharacter(nameToLevelUp);
+        string choice = Console.ReadLine();
+                
+        var foundCharacter = characterReader.FindCharacter(choice);
 
         if (foundCharacter != null)
         {
+             _output.WriteLine($"You've Chosen to Level Up {foundCharacter.CharacterName}");
             foundCharacter.CharacterLevel++;
         }
         else
@@ -147,6 +147,25 @@ public class CharacterManager
             _output.WriteLine("Character not found.");
         }
         
+    }
+
+    public void FindACharacter()
+    {
+        characterReader.DisplayCharacterNamesMenu();
+        
+        Console.Write("Enter Your Choice: ");
+        string choice = Console.ReadLine();
+                
+        var foundCharacter = characterReader.FindCharacter(choice);
+
+        if (foundCharacter != null)
+        {
+            foundCharacter.DisplayCharacterInformation();
+        }
+        else
+        {
+            _output.WriteLine("Character not found.");
+        }
     }
 }
 
@@ -157,5 +176,10 @@ public class Character
     public int CharacterLevel {get;set;}
     public int CharacterHitPoints {get;set;}
     public string[] CharacterEquipment {get;set;}
+
+    public void DisplayCharacterInformation()
+    {
+        Console.WriteLine($"Name: {CharacterName}\nClass: {CharacterClass}\nLevel: {CharacterLevel}\nHit Points: {CharacterHitPoints}\nEquipment: {string.Join("|", CharacterEquipment)}");
+    }
 
 }

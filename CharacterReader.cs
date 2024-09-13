@@ -93,9 +93,11 @@ public class CharacterReader
         }
     }
 
-    public Character FindCharacter(string characterSearch)
+    public Character FindCharacter(string choice)
     {
-        var foundCharacter = CharactersList.Where(c => c.CharacterName == characterSearch).FirstOrDefault();
+        int indexToFind = Convert.ToInt16(choice) - 1;
+        string NameToFind = CharacterNamesList[indexToFind];
+        var foundCharacter = CharactersList.Where(c => c.CharacterName == NameToFind).FirstOrDefault();
         return foundCharacter;
     }
 
